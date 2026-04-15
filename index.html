@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Absensi Online</title>
+
+  <style>
+  body {
+  font-family: Arial, sans-serif;
+  background: white;
+  margin: 0;
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+/* LOGO */
+.header {
+  text-align: center;
+  margin-bottom: 35px; /* ini yang bikin jarak jelas */
+}
+
+.logo {
+  width: 600px;
+}
+
+/* CARD */
+.container {
+  width: 95%;
+  max-width: 650px; /* diperbesar */
+  background: black;
+  border-radius: 20px;
+  padding: 45px 30px; /* diperbesar */
+  box-sizing: border-box;
+}
+
+/* TITLE */
+h2 {
+  text-align: center;
+  margin-bottom: 25px;
+  font-size: 26px; /* diperbesar */
+  color: white;
+}
+
+/* INPUT */
+select {
+  width: 100%;
+  padding: 16px;
+  font-size: 18px;
+  border-radius: 10px;
+  border: none;
+  margin-bottom: 20px;
+}
+
+/* BUTTON */
+button {
+  width: 100%;
+  padding: 16px;
+  font-size: 18px;
+  background: yellow;
+  color: black;
+  border: none;
+  border-radius: 12px;
+  cursor: pointer;
+}
+
+/* STATUS */
+.status {
+  margin-top: 15px;
+  text-align: center;
+  font-size: 16px;
+}
+
+.loading { color: orange; }
+.success { color: #00ff88; }
+.error { color: red; }
+  </style>
+  
+</head>
+
+<body>
+    <div class="header">
+    <img src="https://hancau.my.id/wp-content/uploads/2024/02/cropped-logo-hancau-creative-digital.png" class="logo">
+  </div>
+
+  <div class="container">
+    <h2>Absensi Online</h2>
+
+    <select id="nama" disabled>
+      <option value="">-- Pilih Nama --</option>
+    </select>
+
+    <button onclick="absen()">Absen Sekarang</button>
+
+    <p id="status" class="status"></p>
+  </div>
+
+  <script>
+    function loadNama() {
+fetch("https://script.google.com/macros/s/AKfycbwTzLdHDQQNghy4NcnGFnT-B2RtUzg0RYE1yAWe4DPCTpS-cSCve6xpyvNCyXOmqMMW/exec?id=api&tipe=ambil")
+.then(response => response.json())
+.then(data => {
+console.log(data);
+	const select = document.getElementById("nama");
+	data.forEach(function(nama) {
+          const option = document.createElement("option");
+          option.value = nama;
+          option.textContent = nama;
+          select.appendChild(option);
+        });
+	select.removeAttribute("disabled");
+});
+      
+    }
+
+    function absen() {
+      const nama = document.getElementById("nama").value;
+      const status = document.getElementById("status");
+
+      if (!nama) {
+        status.className = "status error";
+        status.innerText = "Silakan pilih nama!";
+        return;
+      }
+
+      status.className = "status loading";
+      status.innerText = "Mengambil lokasi...";
+
+      navigator.geolocation.getCurrentPosition(
+        function(pos) {
+          const lat = pos.coords.latitude;
+          const lng = pos.coords.longitude;
+
+          status.innerText = "Mengirim data...";
+
+          fetch(`https://script.google.com/macros/s/AKfycbwTzLdHDQQNghy4NcnGFnT-B2RtUzg0RYE1yAWe4DPCTpS-cSCve6xpyvNCyXOmqMMW/exec?id=api&tipe=simpan&nama=${nama}&lat=${lat}&lng=${lng}`)
+.then(response => response.json())
+.then(data => {
+	if(data.status === "sukses"){
+		status.className = "status success";
+              status.innerText = "Absensi berhasil ✅";
+	}else{
+		status.className = "status error";
+              status.innerText = err.message;
+	}
+});
+        },
+        function(error) {
+          status.className = "status error";
+          status.innerText = "Gagal ambil lokasi. Aktifkan GPS!";
+        }
+      );
+    }
+
+    window.onload = loadNama;
+  </script>
+</body>
+</html>
