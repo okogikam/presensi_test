@@ -84,7 +84,7 @@ button {
 
 <body>
     <div class="header">
-    <img style="max-width: 100%;" src="https://hancau.my.id/wp-content/uploads/2024/02/cropped-logo-hancau-creative-digital.png" class="logo">
+    <img src="https://hancau.my.id/wp-content/uploads/2024/02/cropped-logo-hancau-creative-digital.png" class="logo">
   </div>
 
   <div class="container">
@@ -100,8 +100,14 @@ button {
   </div>
 
   <script>
+const info = {
+  userAgent: navigator.userAgent
+};
+
+console.log(info);
+
     function loadNama() {
-fetch("https://script.google.com/macros/s/AKfycbwTzLdHDQQNghy4NcnGFnT-B2RtUzg0RYE1yAWe4DPCTpS-cSCve6xpyvNCyXOmqMMW/exec?id=api&tipe=ambil")
+fetch("https://script.google.com/macros/s/AKfycbxpsp0i2T-9ICeDXTodlgrJThK4Y8_o_hWiXfz3eh5CCmVnLkP8LK2gBNP2gW_P1Cjp/exec?id=api&tipe=ambil")
 .then(response => response.json())
 .then(data => {
 console.log(data);
@@ -115,6 +121,8 @@ console.log(data);
 	select.removeAttribute("disabled");
 });
       
+    let user = Session.getActiveUser().getEmail();
+    console.log(user);
     }
 
     function absen() {
@@ -134,10 +142,11 @@ console.log(data);
         function(pos) {
           const lat = pos.coords.latitude;
           const lng = pos.coords.longitude;
+	  let ua = navigator.userAgent;
 
           status.innerText = "Mengirim data...";
 
-          fetch(`https://script.google.com/macros/s/AKfycbwTzLdHDQQNghy4NcnGFnT-B2RtUzg0RYE1yAWe4DPCTpS-cSCve6xpyvNCyXOmqMMW/exec?id=api&tipe=simpan&nama=${nama}&lat=${lat}&lng=${lng}`)
+          fetch(`https://script.google.com/macros/s/AKfycbxpsp0i2T-9ICeDXTodlgrJThK4Y8_o_hWiXfz3eh5CCmVnLkP8LK2gBNP2gW_P1Cjp/exec?id=api&tipe=simpan&nama=${nama}&lat=${lat}&lng=${lng}&ua=${ua}`)
 .then(response => response.json())
 .then(data => {
 	if(data.status === "sukses"){
